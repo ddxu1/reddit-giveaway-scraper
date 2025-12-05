@@ -1,14 +1,38 @@
 # Reddit Giveaway Scraper for Discord
 
-Automatically scrapes r/legendsza for giveaway posts and sends notifications to Discord via webhook. Runs for free on GitHub Actions every 15 minutes.
+Automatically scrapes multiple Pokemon-related subreddits for giveaway posts and sends notifications to Discord via webhook. Runs for free on GitHub Actions every 15 minutes.
 
 ## Features
 
 - 🔄 Runs automatically every 15 minutes on GitHub Actions
-- 🎁 Searches for "giveaway" keyword in post titles and content
+- 🎁 Monitors multiple subreddits with custom search criteria
 - 📢 Sends rich Discord notifications with post details
 - 💾 Tracks seen posts to avoid duplicate notifications
 - 🆓 Completely free using GitHub Actions
+
+## Search Criteria
+
+The scraper monitors the following subreddits with specific filters:
+
+1. **r/PokemonLegendsZa**
+   - Searches for: "giveaway" (case insensitive)
+   - Checks: Post titles and body text
+   - Flair filter: None
+
+2. **r/LegendsZa**
+   - Searches for: "giveaway" (case insensitive)
+   - Checks: Post titles and body text
+   - Flair filter: None
+
+3. **r/PokemonZA**
+   - Searches for: "giveaway" (case insensitive) OR "Shiny Giveaway" flair
+   - Checks: Post titles and body text for keyword, OR post flair
+   - Logic: Matches if EITHER condition is met
+
+4. **r/ShinyPokemon**
+   - Searches for: Posts containing BOTH "9]" AND "giveaway" (case insensitive)
+   - Checks: Post titles only
+   - Flair filter: None
 
 ## Setup Instructions
 
@@ -46,7 +70,7 @@ Automatically scrapes r/legendsza for giveaway posts and sends notifications to 
 
    - `REDDIT_CLIENT_ID`: Your Reddit app client ID
    - `REDDIT_CLIENT_SECRET`: Your Reddit app client secret
-   - `REDDIT_USER_AGENT`: Something like `giveaway-scraper by u/YourRedditUsername`
+   - `   `: Something like `giveaway-scraper by u/YourRedditUsername`
    - `DISCORD_WEBHOOK_URL`: Your Discord webhook URL
 
 ### 5. Enable GitHub Actions
@@ -64,10 +88,15 @@ Automatically scrapes r/legendsza for giveaway posts and sends notifications to 
 
 ## Configuration
 
-Edit `scrape.py` to customize:
+Edit the `SUBREDDIT_CONFIGS` list in `scrape.py` to customize subreddit monitoring:
 
-- `SUBREDDIT`: Change to different subreddit (default: "legendsza")
-- `KEYWORD`: Change search term (default: "giveaway")
+Each subreddit configuration supports:
+- `subreddit`: The subreddit name to monitor
+- `keyword`: Search term to find in posts (case insensitive)
+- `flair`: Specific post flair/tag to filter by (must match exactly)
+- `custom_filter`: Special custom filtering logic for advanced use cases
+
+You can add, remove, or modify subreddit configurations as needed.
 
 Edit `.github/workflows/reddit-scraper.yml` to customize:
 
@@ -79,8 +108,8 @@ Edit `.github/workflows/reddit-scraper.yml` to customize:
 ## How It Works
 
 1. GitHub Actions runs the scraper every 15 minutes
-2. The script checks the latest 100 posts in r/legendsza
-3. New posts containing "giveaway" trigger a Discord notification
+2. The script checks the latest 100 posts in each configured subreddit
+3. Posts matching the specific criteria for each subreddit trigger a Discord notification
 4. Post IDs are saved to `seen_posts.json` to prevent duplicates
 5. The file is committed back to the repository
 
