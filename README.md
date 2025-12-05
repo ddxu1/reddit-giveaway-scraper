@@ -30,8 +30,9 @@ The scraper monitors the following subreddits with specific filters:
    - Logic: Matches if EITHER condition is met
 
 4. **r/ShinyPokemon**
-   - Searches for: Posts containing BOTH "9]" AND "giveaway" (case insensitive)
-   - Checks: Post titles only
+   - Searches for: ("9]" AND "giveaway") OR ("9]" AND "[ga]")
+   - Checks: Post titles only (case insensitive for text, case sensitive for "9]")
+   - Logic: Matches if post contains "9]" along with either "giveaway" or "[ga]"
    - Flair filter: None
 
 ## Setup Instructions

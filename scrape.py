@@ -111,9 +111,13 @@ def matches_criteria(post, config):
     """Check if a post matches the given subreddit configuration criteria."""
     # Handle custom filters
     if config["custom_filter"] == "shinypokemon_gen9":
-        # Check for "9]" and "giveaway" in title
+        # Check for ("9]" and "giveaway") OR ("9]" and "[ga]") in title
         title_lower = post.title.lower()
-        return "9]" in post.title and "giveaway" in title_lower
+        has_gen9 = "9]" in post.title
+        has_giveaway = "giveaway" in title_lower
+        has_ga_tag = "[ga]" in title_lower
+
+        return (has_gen9 and has_giveaway) or (has_gen9 and has_ga_tag)
 
     if config["custom_filter"] == "pokemonza_or":
         # Check for "giveaway" keyword OR "Shiny Giveaway" flair
@@ -166,7 +170,7 @@ def main():
 
         # Build description message
         if custom_filter == "shinypokemon_gen9":
-            criteria = "posts with '9]' and 'giveaway' in title"
+            criteria = "posts with ('9]' AND 'giveaway') OR ('9]' AND '[ga]') in title"
         elif custom_filter == "pokemonza_or":
             criteria = f"'{keyword}' OR flair '{flair}'"
         elif flair and keyword:
